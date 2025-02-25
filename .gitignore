@@ -12,6 +12,7 @@ coreboot-builds*/
 generated/
 
 site-local
+*.patch
 
 *.\#
 *.a

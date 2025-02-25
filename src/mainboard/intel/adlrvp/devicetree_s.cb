@@ -1,0 +1,78 @@
+chip soc/intel/alderlake
+
+	register "serial_io_i2c_mode" = "{
+		[PchSerialIoIndexI2C0] = PchSerialIoPci,
+		[PchSerialIoIndexI2C1] = PchSerialIoPci,
+		[PchSerialIoIndexI2C2] = PchSerialIoPci,
+		[PchSerialIoIndexI2C3] = PchSerialIoPci,
+		[PchSerialIoIndexI2C4] = PchSerialIoDisabled,
+		[PchSerialIoIndexI2C5] = PchSerialIoPci,
+	}"
+
+	register "serial_io_gspi_mode" = "{
+		[PchSerialIoIndexGSPI0] = PchSerialIoPci,
+		[PchSerialIoIndexGSPI1] = PchSerialIoPci,
+		[PchSerialIoIndexGSPI2] = PchSerialIoDisabled,
+		[PchSerialIoIndexGSPI3] = PchSerialIoDisabled,
+	}"
+
+	register "serial_io_gspi_cs_mode" = "{
+		[PchSerialIoIndexGSPI0] = 0,
+		[PchSerialIoIndexGSPI1] = 1,
+		[PchSerialIoIndexGSPI2] = 0,
+		[PchSerialIoIndexGSPI3] = 0,
+	}"
+
+	register "serial_io_gspi_cs_state" = "{
+		[PchSerialIoIndexGSPI0] = 0,
+		[PchSerialIoIndexGSPI1] = 0,
+		[PchSerialIoIndexGSPI2] = 0,
+		[PchSerialIoIndexGSPI3] = 0,
+	}"
+
+	register "serial_io_uart_mode" = "{
+		[PchSerialIoIndexUART0] = PchSerialIoSkipInit,
+		[PchSerialIoIndexUART1] = PchSerialIoDisabled,
+		[PchSerialIoIndexUART2] = PchSerialIoDisabled,
+	}"
+
+	# Intel Common SoC Config
+	register "common_soc_config" = "{
+		.gspi[1] = {
+			.speed_mhz = 1,
+			.early_init = 1,
+		},
+		.i2c[0] = {
+			.speed = I2C_SPEED_FAST,
+		},
+		.i2c[1] = {
+			.speed = I2C_SPEED_FAST,
+		},
+		.i2c[2] = {
+			.speed = I2C_SPEED_FAST,
+		},
+		.i2c[3] = {
+			.speed = I2C_SPEED_FAST,
+		},
+		.i2c[5] = {
+			.speed = I2C_SPEED_FAST,
+		},
+	}"
+
+	device domain 0 on
+		device ref sata on
+			register "sata_salp_support" = "1"
+			register "sata_ports_enable" = "{
+				[4] = 1,
+				[5] = 1,
+				[6] = 1,
+				[7] = 1,
+			}"
+
+			register "sata_ports_dev_slp" = "{
+				[6] = 1,
+				[7] = 1,
+			}"
+		end
+	end
+end

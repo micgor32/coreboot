@@ -91,6 +91,8 @@ void mainboard_memory_init_params(FSPM_UPD *memupd)
 	case ADL_P_DDR4_1:
 	case ADL_P_DDR4_2:
 	case ADL_P_DDR5_1:
+	case ADL_S_DDR5_1DPC:
+	case RPL_S_DDR5_1DPC:
 		memcfg_init(memupd, mem_config, &dimm_module_spd_info, half_populated);
 		break;
 	case ADL_P_DDR5_2:

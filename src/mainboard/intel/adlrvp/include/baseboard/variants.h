@@ -25,6 +25,10 @@ enum adl_boardid {
 	ADL_M_LP5 = 0x2,
 	/* ADL-N LP5 RVP */
 	ADL_N_LP5 = 0x7,
+	/* ADL-S DDR5 RVP 1DPC */
+	ADL_S_DDR5_1DPC = 0x2B,
+	/* RPL-S DDR5 RVP 1DPC */
+	RPL_S_DDR5_1DPC = 0x39,
 };
 
 /* Functions to configure GPIO as per variant schematics */

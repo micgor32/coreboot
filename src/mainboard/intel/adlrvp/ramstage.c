@@ -5,7 +5,7 @@
 #include <console/console.h>
 #include <device/pci_ids.h>
 #include <device/pci_ops.h>
-#include <soc/gpio_soc_defs.h>
+#include <soc/gpio.h>
 #include <soc/pci_devs.h>
 #include <soc/soc_chip.h>
 #include <string.h>
@@ -25,7 +25,6 @@ const struct cpu_power_limits limits[] = {
 	{ PCI_DID_INTEL_ADL_N_ID_2,  6, 3000,  6000,  25000,  25000,  78000 },
 	{ PCI_DID_INTEL_ADL_N_ID_3,  6, 3000,  6000,  25000,  25000,  78000 },
 	{ PCI_DID_INTEL_ADL_N_ID_4,  6, 3000,  6000,  25000,  25000,  78000 },
-	{ PCI_DID_INTEL_ADL_N_ID_5,  6, 3000,  6000,  25000,  25000,  78000 },
 };
 
 WEAK_DEV_PTR(dptf_policy);
@@ -62,7 +61,9 @@ void variant_update_power_limits(void)
 	}
 }
 
-static const struct typec_aux_bias_pads pad_config = { GPP_E23, GPP_E22 };
+#if (!(CONFIG(BOARD_INTEL_ADLRVP_P_EXT_EC) || CONFIG(BOARD_INTEL_ADLRVP_M_EXT_EC) \
+	|| CONFIG(BOARD_INTEL_ADLRVP_RPL_EXT_EC) || CONFIG(BOARD_INTEL_ADLRVP_S_DDR5_UDIMM_1DPC) \
+	|| CONFIG(BOARD_INTEL_ADLRVP_RPL_S_DDR5_UDIMM_1DPC)))
 
 static const struct board_id_iom_port_config {
 	int board_id;
@@ -80,10 +81,7 @@ static const struct board_id_iom_port_config {
 
 static void variant_update_typec_init_config(void)
 {
-	/* Skip filling aux bias gpio pads for Windows SKUs */
-	if (!(CONFIG(BOARD_INTEL_ADLRVP_P_EXT_EC) || CONFIG(BOARD_INTEL_ADLRVP_RPL_EXT_EC)))
-		return;
-
+	const struct typec_aux_bias_pads pad_config = { GPP_E23, GPP_E22 };
 	config_t *config = config_of_soc();
 	int board_id = get_board_id();
 	for (int i = 0; i < ARRAY_SIZE(port_config); i++) {
@@ -95,8 +93,16 @@ static void variant_update_typec_init_config(void)
 	}
 }
 
+#endif
+
 void variant_devtree_update(void)
 {
 	variant_update_power_limits();
+
+	/* Skip filling aux bias gpio pads for Windows SKUs */
+#if (!(CONFIG(BOARD_INTEL_ADLRVP_P_EXT_EC) || CONFIG(BOARD_INTEL_ADLRVP_M_EXT_EC) \
+	|| CONFIG(BOARD_INTEL_ADLRVP_RPL_EXT_EC) || CONFIG(BOARD_INTEL_ADLRVP_S_DDR5_UDIMM_1DPC) \
+	|| CONFIG(BOARD_INTEL_ADLRVP_RPL_S_DDR5_UDIMM_1DPC)))
 	variant_update_typec_init_config();
+#endif
 }

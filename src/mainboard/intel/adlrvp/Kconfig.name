@@ -1,4 +1,5 @@
-## SPDX-License-Identifier: GPL-2.0-only
+config BOARD_INTEL_ADLRVP_S_DDR5_UDIMM_1DPC
+	bool "Alderlake-S RVP DDR5 UDIMM 1DPC"
 
 config BOARD_INTEL_ADLRVP_P
 	bool "Alderlake-P RVP"
@@ -8,6 +9,12 @@ config BOARD_INTEL_ADLRVP_P_EXT_EC
 
 config BOARD_INTEL_ADLRVP_P_MCHP
 	bool "Alderlake-P RVP with Microchip EC"
+
+config BOARD_INTEL_ADLRVP_M
+	bool "Alderlake-M RVP"
+
+config BOARD_INTEL_ADLRVP_M_EXT_EC
+	bool "Alderlake-M RVP with Chrome EC"
 
 config BOARD_INTEL_ADLRVP_N
 	bool "Alderlake-N RVP"
@@ -20,3 +27,7 @@ config BOARD_INTEL_ADLRVP_RPL
 
 config BOARD_INTEL_ADLRVP_RPL_EXT_EC
 	bool "Raptorlake silicon with Alderlake-P RVP and Chrome EC"
+
+config BOARD_INTEL_ADLRVP_RPL_S_DDR5_UDIMM_1DPC
+	bool "Raptorlake silicon with Alderlake-S RVP DDR5 UDIMM 1DPC"
+

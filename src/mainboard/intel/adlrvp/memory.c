@@ -170,6 +170,23 @@ static const struct mb_cfg ddr5_mem_config = {
 	}
 };
 
+static const struct mb_cfg adls_ddr5_1dpc_mem_config = {
+	.type = MEM_TYPE_DDR5,
+
+	/* According to DOC #573387 rcomp values no longer have to be provided */
+	/* DDR DIMM configuration does not need to set DQ/DQS maps */
+
+	.ect = true, /* Early Command Training */
+
+	.UserBd = BOARD_TYPE_DESKTOP_1DPC,
+
+	.LpDdrDqDqsReTraining = 1,
+
+	.ddr_config = {
+		.dq_pins_interleaved = true,
+	}
+};
+
 static const struct mb_cfg adlm_lp4_mem_config = {
 	.type = MEM_TYPE_LP4X,
 
@@ -375,6 +392,10 @@ const struct mb_cfg *variant_memory_params(void)
 		return &adlm_lp5_mem_config;
 	case ADL_N_LP5:
 		return &adln_lp5_mem_config;
+	case ADL_S_DDR5_1DPC:
+		return &adls_ddr5_1dpc_mem_config;
+	case RPL_S_DDR5_1DPC:
+		return &adls_ddr5_1dpc_mem_config;
 	default:
 		die("unsupported board id : 0x%x\n", board_id);
 	}

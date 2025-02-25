@@ -1,0 +1,81 @@
+chip soc/intel/alderlake
+
+	device domain 0 on
+		device ref cnvi_wifi on
+			register "cnvi_bt_core" = "true"
+			register "cnvi_bt_audio_offload" = "false"
+			chip drivers/wifi/generic
+				register "enable_cnvi_ddr_rfim" = "true"
+				device generic 0 on end
+			end
+		end
+		device ref gbe on end
+		device ref pcie5_0 on
+			#register "pcie_clk_config_flag[0]" = "PCIE_CLK_FREE_RUNNING"
+			register "cpu_pcie_rp[CPU_RP(2)]" = "{
+				.clk_src = 0,
+				.clk_req = 0,
+				.flags = PCIE_RP_LTR | PCIE_RP_AER,
+			}"
+		end
+		device ref gna on end
+		device ref smbus on end
+		device ref fast_spi on end
+		device ref pcie_rp1 on
+			# M.2 SSD (Document 626352 is wrong here. it states that clk_src should be 4)
+			register "pch_pcie_rp[PCH_RP(1)]" = "{
+				.clk_src = 10,
+				.clk_req = 10,
+				.flags = PCIE_RP_CLK_REQ_DETECT,
+			}"
+		end
+		device ref pcie_rp5 on
+			# PCIE x4 Slot 3
+			register "pch_pcie_rp[PCH_RP(5)]" = "{
+				.clk_src = 15,
+				.clk_req = 15,
+				.flags = PCIE_RP_CLK_REQ_DETECT,
+			}"
+		end
+		device ref pcie_rp7 on
+			# LAN GBE
+			register "pcie_clk_config_flag[5]" = "PCIE_CLK_LAN"
+			register "pch_pcie_rp[PCH_RP(7)]" = "{
+				.clk_req = 5,
+				.flags = PCIE_RP_CLK_REQ_DETECT,
+			}"
+		end
+		device ref pcie_rp8 on
+			# M.2 CNVi (Document 626352 is wrong here. it states that clk_src should be 11)
+			register "pch_pcie_rp[PCH_RP(8)]" = "{
+				.clk_src = 9,
+				.clk_req = 9,
+				.flags = PCIE_RP_CLK_REQ_DETECT,
+			}"
+		end
+		#device ref pcie_rp9 on (doesn't work)
+		#	# PCIE x4 Slot 2 (Document 626352 is wrong here. it states that clk_src should be 16)
+		#	register "pch_pcie_rp[PCH_RP(9)]" = "{
+		#		.clk_src = 14,
+		#		.clk_req = 14,
+		#		.flags = PCIE_RP_CLK_REQ_DETECT,
+		#	}"
+		#end
+		device ref pcie_rp21 on
+			# PCIE x4 Slot 1 (Document 626352 is wrong here. it states that clk_src should be 17)
+			register "pch_pcie_rp[PCH_RP(21)]" = "{
+				.clk_src = 2,
+				.clk_req = 2,
+				.flags = PCIE_RP_CLK_REQ_DETECT,
+			}"
+		end
+		device ref pcie_rp25 on
+			# M.2 SSD (Document 626352 is wrong here. it states that clk_src should be 6)
+			register "pch_pcie_rp[PCH_RP(25)]" = "{
+				.clk_src = 13,
+				.clk_req = 13,
+				.flags = PCIE_RP_CLK_REQ_DETECT,
+			}"
+		end
+	end
+end

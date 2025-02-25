@@ -236,6 +236,9 @@ static void fill_fspm_misc_params(FSP_M_CONFIG *m_cfg,
 
 	/* Skip MBP HOB */
 	m_cfg->SkipMbpHob = !CONFIG(FSP_PUBLISH_MBP_HOB);
+
+	/* Set maximum DMI link speed defined by the generation (e.g. Gen1, Gen2, Gen3 ...) */
+	m_cfg->DmiMaxLinkSpeed = config->dmi_max_link_speed;
 }
 
 static void fill_fspm_audio_params(FSP_M_CONFIG *m_cfg,
