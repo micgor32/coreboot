@@ -213,10 +213,12 @@ void smm_info(uintptr_t *perm_smbase, size_t *perm_smsize,
 	bool minimal;
 
 	platform_status = platform_get_smm_info(perm_smbase, perm_smsize);
+	// wont be needed, think of dropping SKIP_SMM_INIT in general, we let cb do usuall calculations here and once this is done, we abort
+	// it (i.e. we still disable smm) and pass the params to the payload.
 	if (platform_status == SKIP_SMM_INIT) {
 		printk(BIOS_INFO, "SKIP_SMM_INIT is platform status\n");
 		*smm_save_state_size = sizeof(em64t101_smm_state_save_area_t);
-		return;
+		/*return;*/
 	}
 
 	printk(BIOS_DEBUG, "Setting up SMI for CPU\n");
@@ -230,7 +232,7 @@ void smm_info(uintptr_t *perm_smbase, size_t *perm_smsize,
 	if (smm_reloc_params.ied_size)
 		setup_ied_area(&smm_reloc_params);
 
-	*smm_save_state_size = sizeof(em64t101_smm_state_save_area_t);
+	//*smm_save_state_size = sizeof(em64t101_smm_state_save_area_t);
 }
 
 void smm_initialize(void)

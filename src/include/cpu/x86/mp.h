@@ -144,4 +144,11 @@ void smm_initiate_relocation_parallel(void);
 /* Send SMI to self with single execution. */
 void smm_initiate_relocation(void);
 
+
+struct params {
+	size_t smsize_save;
+	uintptr_t smbase_save;
+	size_t smm_save_state_size;
+};
+
 #endif /* _X86_MP_H_ */

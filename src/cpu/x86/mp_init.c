@@ -760,7 +760,6 @@ static enum cb_err install_relocation_handler(int num_cpus, size_t save_state_si
 	printk(BIOS_INFO, "%s\n", __func__);
 
 	if (CONFIG(X86_SMM_SKIP_RELOCATION_HANDLER)) {
-		printk(BIOS_INFO, "skip reloc handler");
 		return CB_SUCCESS;
 	}
 
@@ -814,7 +813,6 @@ static void load_smm_handlers(void)
 	printk(BIOS_INFO, "%s\n", __func__);
 	const size_t save_state_size = mp_state.smm_save_state_size;
 
-	printk(BIOS_INFO, "PERM_SMRAMSIZE in mp_state is %zx\n", mp_state.perm_smsize);
 	/* Do nothing if SMM is disabled.*/
 	if (!is_smm_enabled())
 		return;
@@ -851,10 +849,8 @@ static void load_smm_handlers(void)
 /* Trigger SMM as part of MP flight record. */
 static void trigger_smm_relocation(void)
 {
-	printk(BIOS_INFO, "%s\n", __func__);
 	/* Do nothing if SMM is disabled.*/
 	if (!is_smm_enabled() || mp_state.ops.per_cpu_smm_trigger == NULL) {
-		printk(BIOS_INFO, "do nothing in trigger\n");
 		return;
 	}
 	/* Trigger SMM mode for the currently running processor. */
@@ -1096,9 +1092,7 @@ static struct mp_flight_record mp_steps[] = {
 
 static void fill_mp_state_smm(struct mp_state *state, const struct mp_ops *ops)
 {
-	printk(BIOS_INFO, "for some reason the the get_smm_info is not null anymore\n");
 	if (ops->get_smm_info != NULL) {
-		printk(BIOS_INFO, "get info will be called\n");
 		ops->get_smm_info(&state->perm_smbase, &state->perm_smsize,
 				  &state->smm_save_state_size);
 	}
@@ -1112,7 +1106,6 @@ static void fill_mp_state_smm(struct mp_state *state, const struct mp_ops *ops)
 	 * provided.
 	 */
 	if (ops->per_cpu_smm_trigger == NULL) {
-		printk(BIOS_INFO, "default to smm_initiate_relocation\n");
 		mp_state.ops.per_cpu_smm_trigger = smm_initiate_relocation;
 	}
 }
@@ -1128,20 +1121,19 @@ static void fill_mp_state(struct mp_state *state, const struct mp_ops *ops)
 	if (ops->get_cpu_count != NULL)
 		state->cpu_count = ops->get_cpu_count();
 
-	printk(BIOS_INFO, "CPU COUNT %d\n", state->cpu_count);
-
 	if (CONFIG(HAVE_SMI_HANDLER)) {
-		printk(BIOS_INFO, "mp state smm is executed\n");
 		fill_mp_state_smm(state, ops);
 	}
-	printk(BIOS_INFO, "mp_state smm is skipped\n");
 }
+
+struct params *save_params;
 
 static enum cb_err do_mp_init_with_smm(struct bus *cpu_bus, const struct mp_ops *mp_ops)
 {
 	enum cb_err ret;
 	void *default_smm_area;
 	struct mp_params mp_params;
+	save_params = malloc(sizeof(*save_params));
 
 	if (mp_ops->pre_mp_init != NULL)
 		mp_ops->pre_mp_init();
@@ -1155,6 +1147,16 @@ static enum cb_err do_mp_init_with_smm(struct bus *cpu_bus, const struct mp_ops 
 		return CB_ERR;
 	}
 
+	if (!CONFIG(HAVE_NATIVE_SMI_HANDLER)) {
+		save_params->smsize_save = mp_state.perm_smsize;
+		save_params->smbase_save = mp_state.perm_smbase;
+		save_params->smm_save_state_size = mp_state.smm_save_state_size;
+
+		// we keep the "invalid", lets see whether it works as intended.
+		mp_state.perm_smsize = 0;
+		mp_state.perm_smbase = 0;
+	}
+
 	/* Sanity check SMM state. */
 	smm_enable();
 	if (mp_state.perm_smsize == 0)
@@ -1163,8 +1165,6 @@ static enum cb_err do_mp_init_with_smm(struct bus *cpu_bus, const struct mp_ops 
 		smm_disable();
 	if (!CONFIG(X86_SMM_SKIP_RELOCATION_HANDLER) && mp_state.ops.relocation_handler == NULL)
 		smm_disable();
-
-	printk(BIOS_INFO, "smm enable %d\n", is_smm_enabled());
 
 	if (is_smm_enabled())
 		printk(BIOS_INFO, "Will perform SMM setup.\n");

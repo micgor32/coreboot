@@ -6,6 +6,7 @@
 #include <console/console.h>
 #include <cpu/intel/smm_reloc.h>
 #include <cpu/x86/smm.h>
+#include <cpu/x86/mp.h>
 #include <smm_payload_interface.h>
 #include <soc/pm.h>
 #include <types.h>
@@ -64,9 +65,9 @@ static void *find_s3_info(void)
 enum platform_smm_status platform_get_smm_info(uintptr_t *perm_smbase, size_t *perm_smsize)
 {
 	// Initialise to "invalid" state
-	*perm_smbase = 0;
-	*perm_smsize = 0;
-	printk(BIOS_INFO, "smbase_relocation_cpu_stacks size 0x%zx", sizeof(smbase_relocation_cpu_stacks));
+	/**perm_smbase = 0;*/
+	/**perm_smsize = 0;*/
+	//printk(BIOS_INFO, "smbase_relocation_cpu_stacks size 0x%zx", sizeof(smbase_relocation_cpu_stacks));
 
 	// No SMM relocation needed on cold boot
 	if (!acpi_is_wakeup_s3())

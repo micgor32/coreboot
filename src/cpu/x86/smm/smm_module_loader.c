@@ -208,10 +208,8 @@ int smm_setup_stack(const uintptr_t perm_smbase, const size_t perm_smram_size,
 		return -1;
 	}
 
-	printk(BIOS_INFO, "total cpus: %d, stack size 0x%zx, smram_size is 0x%zx", total_cpus, stack_size, perm_smram_size);
 
 	const size_t total_stack_size = total_cpus * stack_size;
-	printk(BIOS_INFO, "actual total_stack_size is %zx\n", total_stack_size);
 	if (total_stack_size >= perm_smram_size) {
 		printk(BIOS_ERR, "%s: Stack won't fit smram\n", __func__);
 		return -1;
@@ -219,9 +217,6 @@ int smm_setup_stack(const uintptr_t perm_smbase, const size_t perm_smram_size,
 	stack_top = perm_smbase + total_stack_size;
 	g_stack_size = stack_size;
 
-	printk(BIOS_INFO, "smm stack setup (loader)\n");
-	printk(BIOS_INFO, "0x%lx\n", stack_top);
-	printk(BIOS_INFO, "0x%zx\n", g_stack_size);
 	return 0;
 }
 

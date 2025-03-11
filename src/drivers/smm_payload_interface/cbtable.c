@@ -2,6 +2,7 @@
 
 #include <boot/coreboot_tables.h>
 #include <cpu/x86/smm.h>
+#include <cpu/x86/mp.h>
 #include <device/pci_ops.h>
 #include <lib.h>
 #include <smm_payload_interface.h>
@@ -82,11 +83,17 @@ void lb_save_restore(struct lb_header *header)
 
 	/* SMRAM ranges */
 	struct lb_pld_smram_descriptor_block *smram_desc = (struct lb_pld_smram_descriptor_block *)lb_new_record(header);
+	extern struct params *save_params;
 
 	smram_desc->tag = LB_TAG_PLD_SMM_SMRAM;
 	smram_desc->size = sizeof(*smram_desc) + sizeof(struct lb_pld_smram_descriptor);
 	smram_desc->number_of_smm_regions = 2;
 	smram_desc->stack_size = CONFIG_SMM_MODULE_STACK_SIZE;
+	smram_desc->perm_smsize = save_params->smsize_save;
+	smram_desc->perm_smbase = save_params->smbase_save;
+	smram_desc->save_state_size = save_params->smm_save_state_size;
+
+	free(save_params);
 
 	pld_interface_get_reserved_region(&tseg_base, &tseg_size);
 
