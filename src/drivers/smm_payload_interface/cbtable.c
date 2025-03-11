@@ -86,6 +86,7 @@ void lb_save_restore(struct lb_header *header)
 	smram_desc->tag = LB_TAG_PLD_SMM_SMRAM;
 	smram_desc->size = sizeof(*smram_desc) + sizeof(struct lb_pld_smram_descriptor);
 	smram_desc->number_of_smm_regions = 2;
+	smram_desc->stack_size = CONFIG_SMM_MODULE_STACK_SIZE;
 
 	pld_interface_get_reserved_region(&tseg_base, &tseg_size);
 

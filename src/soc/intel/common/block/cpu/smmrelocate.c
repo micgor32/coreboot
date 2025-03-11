@@ -214,6 +214,7 @@ void smm_info(uintptr_t *perm_smbase, size_t *perm_smsize,
 
 	platform_status = platform_get_smm_info(perm_smbase, perm_smsize);
 	if (platform_status == SKIP_SMM_INIT) {
+		printk(BIOS_INFO, "SKIP_SMM_INIT is platform status\n");
 		*smm_save_state_size = sizeof(em64t101_smm_state_save_area_t);
 		return;
 	}

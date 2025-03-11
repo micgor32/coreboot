@@ -121,6 +121,16 @@ static int smm_create_map(const uintptr_t smbase, const unsigned int num_cpus,
 		cpus[i].active = 1;
 	}
 
+	printk(BIOS_INFO, "SMM map (loader)\n");
+	for (unsigned int i = 0; i < num_cpus; i++) {
+		printk(BIOS_INFO, "0x%lx\n", cpus[i].smbase);
+		printk(BIOS_INFO, "0x%zx\n", cpus[i].stub_code.offset);
+		printk(BIOS_INFO, "0x%zx\n", cpus[i].stub_code.size);
+		printk(BIOS_INFO, "0x%zx\n", cpus[i].ss.offset);
+		printk(BIOS_INFO, "0x%zx\n", cpus[i].ss.size);
+		printk(BIOS_INFO, "0x%x\n", cpus[i].active);
+	}
+
 	return 1;
 }
 
@@ -198,13 +208,20 @@ int smm_setup_stack(const uintptr_t perm_smbase, const size_t perm_smram_size,
 		return -1;
 	}
 
+	printk(BIOS_INFO, "total cpus: %d, stack size 0x%zx, smram_size is 0x%zx", total_cpus, stack_size, perm_smram_size);
+
 	const size_t total_stack_size = total_cpus * stack_size;
+	printk(BIOS_INFO, "actual total_stack_size is %zx\n", total_stack_size);
 	if (total_stack_size >= perm_smram_size) {
 		printk(BIOS_ERR, "%s: Stack won't fit smram\n", __func__);
 		return -1;
 	}
 	stack_top = perm_smbase + total_stack_size;
 	g_stack_size = stack_size;
+
+	printk(BIOS_INFO, "smm stack setup (loader)\n");
+	printk(BIOS_INFO, "0x%lx\n", stack_top);
+	printk(BIOS_INFO, "0x%zx\n", g_stack_size);
 	return 0;
 }
 
@@ -356,6 +373,13 @@ static void setup_smihandler_params(struct smm_runtime *mod_params,
 
 	if (CONFIG(SMM_PCI_RESOURCE_STORE))
 		smm_pci_resource_store_init(mod_params);
+
+	printk(BIOS_INFO, "%s", __func__);
+	printk(BIOS_INFO, "0x%x\n", mod_params->smbase);
+	printk(BIOS_INFO, "0x%x\n", mod_params->smm_size);
+	printk(BIOS_INFO, "0x%x\n", mod_params->save_state_size);
+	printk(BIOS_INFO, "0x%x\n", mod_params->num_cpus);
+	printk(BIOS_INFO, "0x%x\n", mod_params->gnvs_ptr);
 }
 
 static void print_region(const char *name, const struct region region)
@@ -430,6 +454,7 @@ int smm_load_module(const uintptr_t smram_base, const size_t smram_size,
 	 * TODO: once CPU_INFO_V2 is used everywhere, use smaller stack for APs and move
 	 * this back to the BSP stack.
 	 */
+	printk(BIOS_INFO, "%s\n", __func__);
 	static struct region region_list[SMM_REGIONS_ARRAY_SIZE] = {};
 
 	struct rmodule smi_handler;

@@ -126,6 +126,7 @@ bool smm_region_overlaps_handler(const struct region *r)
 
 asmlinkage void smm_handler_start(void *arg)
 {
+	printk(BIOS_INFO, "%s\n", __func__);
 	const struct smm_module_params *p;
 	int cpu;
 	uintptr_t actual_canary;
@@ -133,6 +134,7 @@ asmlinkage void smm_handler_start(void *arg)
 
 	p = arg;
 	cpu = p->cpu;
+	printk(BIOS_INFO, "cpu %d", cpu);
 	expected_canary = (uintptr_t)p->canary;
 
 	/* Make sure to set the global runtime. It's OK to race as the value

@@ -621,6 +621,7 @@ struct lb_pld_smram_descriptor_block {
 	uint32_t tag;
 	uint32_t size;
 	uint32_t number_of_smm_regions;
+	uint32_t stack_size;
 	struct lb_pld_smram_descriptor descriptor[1];
 };
 
