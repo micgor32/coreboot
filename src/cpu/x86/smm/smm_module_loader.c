@@ -253,7 +253,7 @@ static void smm_stub_place_staggered_entry_points(const struct smm_loader_params
  * region. As this might not fit the default SMRAM region, the same region used
  * by the permanent handler can be used during relocation.
  */
-static int smm_module_setup_stub(const uintptr_t smbase, const size_t smm_size,
+int smm_module_setup_stub(const uintptr_t smbase, const size_t smm_size,
 				 struct smm_loader_params *params)
 {
 	struct rmodule smm_stub;
@@ -273,6 +273,11 @@ static int smm_module_setup_stub(const uintptr_t smbase, const size_t smm_size,
 	if (rmodule_load((void *)smm_stub_loc, &smm_stub)) {
 		printk(BIOS_ERR, "%s: load module failed\n", __func__);
 		return -1;
+	}
+
+	if (!CONFIG(HAVE_NATIVE_SMI_HANDLER)) {
+		printk(BIOS_INFO, "%s: setup stub for payload loaded", __func__);
+		return 0;
 	}
 
 	struct smm_stub_params *stub_params = rmodule_parameters(&smm_stub);

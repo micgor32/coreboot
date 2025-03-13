@@ -174,6 +174,9 @@ int smm_setup_stack(const uintptr_t perm_smbase, const size_t perm_smram_size,
 		    const unsigned int total_cpus, const size_t stack_size);
 int smm_setup_relocation_handler(struct smm_loader_params *params);
 int smm_load_module(uintptr_t smram_base, size_t smram_size, struct smm_loader_params *params);
+// Very specific use case, lets see whether we can get rid of having this func declared globally
+int smm_module_setup_stub(const uintptr_t smbase, const size_t smm_size,
+				 struct smm_loader_params *params);
 
 /*
  * Return types to guide relocation for a payload with SMM support.

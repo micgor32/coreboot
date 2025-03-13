@@ -625,6 +625,7 @@ struct lb_pld_smram_descriptor_block {
 	lb_uint64_t perm_smsize;
 	uint32_t perm_smbase;
 	lb_uint64_t save_state_size;
+	uint32_t cr3;
 	struct lb_pld_smram_descriptor descriptor[1];
 };
 

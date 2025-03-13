@@ -84,6 +84,7 @@ void lb_save_restore(struct lb_header *header)
 	/* SMRAM ranges */
 	struct lb_pld_smram_descriptor_block *smram_desc = (struct lb_pld_smram_descriptor_block *)lb_new_record(header);
 	extern struct params *save_params;
+	extern unsigned char _binary_smmstub_start[];
 
 	smram_desc->tag = LB_TAG_PLD_SMM_SMRAM;
 	smram_desc->size = sizeof(*smram_desc) + sizeof(struct lb_pld_smram_descriptor);
@@ -92,6 +93,9 @@ void lb_save_restore(struct lb_header *header)
 	smram_desc->perm_smsize = save_params->smsize_save;
 	smram_desc->perm_smbase = save_params->smbase_save;
 	smram_desc->save_state_size = save_params->smm_save_state_size;
+	smram_desc->cr3 = save_params->cr3;
+	printk(BIOS_INFO, "the binary smmstub start is 0x%u\n", (unsigned int)_binary_smmstub_start);
+	//smram_desc->smmstub_start = _binary_smmstub_start;
 
 	free(save_params);
 
