@@ -149,6 +149,7 @@ struct params {
 	size_t smsize_save;
 	uintptr_t smbase_save;
 	size_t smm_save_state_size;
+	uint32_t cr3;
 };
 
 #endif /* _X86_MP_H_ */
